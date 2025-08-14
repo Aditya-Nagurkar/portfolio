@@ -707,24 +707,29 @@ section {
         width: 90%;
         text-align: center;
         transition: 0.3s;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        padding: 1.5rem 0;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        padding: 2rem 0;
         z-index: 999;
     }
 
     .nav-menu.active {
         left: 5%;
-        animation: menuSlideIn 0.3s ease-out;
+        animation: slideInGlass 0.4s ease-out;
     }
 
-    @keyframes menuSlideIn {
-        from {
+    @keyframes slideInGlass {
+        0% {
             opacity: 0;
             transform: translateX(-20px);
+            backdrop-filter: blur(0px);
         }
-        to {
+        100% {
             opacity: 1;
             transform: translateX(0);
+            backdrop-filter: blur(25px);
         }
     }
 
@@ -733,27 +738,31 @@ section {
     }
 
     .nav-item {
-        margin: 0.75rem 1rem;
+        margin: 1rem 0;
     }
 
     .nav-link {
         font-size: 1.1rem;
-        padding: 0.75rem 1.5rem;
+        padding: 1rem 2rem;
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 12px;
+        margin: 0.5rem 1rem;
         transition: all 0.3s ease;
-        display: block;
-        margin: 0.25rem 0;
+        box-shadow: 
+            0 4px 15px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .nav-link:hover {
         background: rgba(255, 255, 255, 0.2);
         border-color: rgba(251, 191, 36, 0.5);
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        box-shadow: 
+            0 8px 25px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .hero-container {
