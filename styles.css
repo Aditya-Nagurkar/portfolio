@@ -745,15 +745,13 @@ section {
         font-size: 1.1rem;
         padding: 1rem 2rem;
         background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        margin: 0.5rem 1rem;
         transition: all 0.3s ease;
-        box-shadow: 
-            0 4px 15px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        margin: 0.5rem 1rem;
+        display: block;
     }
 
     .nav-link:hover {
@@ -762,7 +760,7 @@ section {
         transform: translateY(-2px);
         box-shadow: 
             0 8px 25px rgba(0, 0, 0, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            0 0 0 1px rgba(251, 191, 36, 0.3);
     }
 
     .hero-container {
