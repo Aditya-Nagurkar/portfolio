@@ -98,6 +98,33 @@ body {
     width: 80%;
 }
 
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+.hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
 /* Hero Section */
 .hero {
     min-height: 100vh;
@@ -678,16 +705,28 @@ section {
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 15px;
         width: 90%;
-        left: 50%;
-        transform: translateX(-50%);
         text-align: center;
         transition: 0.3s;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         padding: 1.5rem 0;
+        z-index: 999;
     }
 
     .nav-menu.active {
-        left: 0;
+        left: 5%;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-item {
+        margin: 1rem 0;
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 0.75rem 1.5rem;
     }
 
     .hero-container {
