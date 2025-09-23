@@ -900,4 +900,28 @@ section {
 
 .fade-in-up {
     animation: fadeInUp 0.6s ease-out;
+}
+
+/* Split Text Animation */
+.split-text {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.split-text .char {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+    animation: splitTextReveal 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes splitTextReveal {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 } 

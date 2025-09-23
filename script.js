@@ -133,11 +133,14 @@ function typeWriter(element, text, speed = 100) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.textContent;
-        typeWriter(heroTitle, originalText, 50);
-    }
+    const heroTitles = document.querySelectorAll('.hero-title');
+    heroTitles.forEach(heroTitle => {
+        // Skip elements that have split-text class (they use split text animation instead)
+        if (!heroTitle.querySelector('.split-text')) {
+            const originalText = heroTitle.textContent;
+            typeWriter(heroTitle, originalText, 50);
+        }
+    });
 });
 
 function animateSkills() {
@@ -247,4 +250,42 @@ function createBackToTopButton() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', createBackToTopButton); 
+document.addEventListener('DOMContentLoaded', createBackToTopButton);
+
+// Split Text Animation Function
+function splitText(element) {
+    const text = element.textContent;
+    element.innerHTML = '';
+    
+    // Split text into individual characters including spaces
+    const chars = text.split('');
+    let charIndex = 0;
+    
+    chars.forEach((char) => {
+        const charSpan = document.createElement('span');
+        charSpan.className = 'char';
+        charSpan.textContent = char;
+        charSpan.style.display = 'inline-block';
+        charSpan.style.animationDelay = `${charIndex * 0.05}s`;
+        element.appendChild(charSpan);
+        charIndex++;
+    });
+}
+
+// Initialize split text animation on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const splitTextElements = document.querySelectorAll('.split-text');
+    splitTextElements.forEach((element, index) => {
+        // Add a base delay for each text element to animate them in sequence
+        const baseDelay = index * 0.3; // 0.3s delay between each text element
+        
+        splitText(element);
+        
+        // Apply base delay to all characters in this element
+        const chars = element.querySelectorAll('.char');
+        chars.forEach(char => {
+            const currentDelay = parseFloat(char.style.animationDelay) || 0;
+            char.style.animationDelay = `${baseDelay + currentDelay}s`;
+        });
+    });
+}); 
