@@ -27,15 +27,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.15)';
-        navbar.style.backdropFilter = 'blur(25px)';
-        navbar.style.webkitBackdropFilter = 'blur(25px)';
+        navbar.style.background = '0, 0, 0, 0.15)';
+        navbar.style.backdropFilter = 'blur(5px)';
+        navbar.style.webkitBackdropFilter = 'blur(5px)';
         navbar.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
         navbar.style.border = '1px solid rgba(255, 255, 255, 0.3)';
     } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.1)';
-        navbar.style.backdropFilter = 'blur(20px)';
-        navbar.style.webkitBackdropFilter = 'blur(20px)';
+        navbar.style.background = '0, 0, 0, 0.2)';
+        navbar.style.backdropFilter = 'blur(5px)';
+        navbar.style.webkitBackdropFilter = 'blur(5px)';
         navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
         navbar.style.border = '1px solid rgba(255, 255, 255, 0.2)';
     }
