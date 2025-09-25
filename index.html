@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="silk-webgl" class="silk-webgl" aria-hidden="true"></div>
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -31,13 +32,25 @@
                     <a href="#contact" class="nav-link">Contact</a>
                 </li>
             </ul>
-            <div class="hamburger">
+            <button class="menu-toggle" aria-label="Open menu" aria-controls="staggered-menu" aria-expanded="false">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
-            </div>
+            </button>
         </div>
     </nav>
+
+    <!-- Fullscreen Staggered Menu -->
+    <div id="staggered-menu" class="staggered-menu" aria-hidden="true">
+        <button class="menu-close" aria-label="Close menu"><span>&times;</span></button>
+        <ul class="staggered-menu-list">
+            <li><a href="#home" class="staggered-link">Home</a></li>
+            <li><a href="#about" class="staggered-link">About</a></li>
+            <li><a href="#skills" class="staggered-link">Skills</a></li>
+            <li><a href="#projects" class="staggered-link">Projects</a></li>
+            <li><a href="#contact" class="staggered-link">Contact</a></li>
+        </ul>
+    </div>
 
     <section id="home" class="hero">
         <div class="hero-container">
@@ -294,6 +307,7 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 

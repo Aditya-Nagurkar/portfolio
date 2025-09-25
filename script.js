@@ -1,15 +1,42 @@
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
+// Staggered fullscreen menu toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const menuOverlay = document.getElementById('staggered-menu');
+const menuClose = document.querySelector('.menu-close');
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
+function openMenu() {
+    if (!menuOverlay) return;
+    menuOverlay.classList.add('open');
+    menuToggle && menuToggle.classList.add('active');
+    menuOverlay.setAttribute('aria-hidden', 'false');
+    menuToggle && menuToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+    if (!menuOverlay) return;
+    menuOverlay.classList.remove('open');
+    menuToggle && menuToggle.classList.remove('active');
+    menuOverlay.setAttribute('aria-hidden', 'true');
+    menuToggle && menuToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+}
+
+menuToggle && menuToggle.addEventListener('click', () => {
+    if (menuOverlay.classList.contains('open')) closeMenu();
+    else openMenu();
 });
 
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+menuClose && menuClose.addEventListener('click', closeMenu);
+
+menuOverlay && menuOverlay.addEventListener('click', (e) => {
+    if (e.target === menuOverlay) closeMenu();
+});
+
+document.querySelectorAll('.staggered-link').forEach(link => {
+    link.addEventListener('click', () => {
+        closeMenu();
+    });
+});
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -27,13 +54,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 100) {
-        navbar.style.background = '0, 0, 0, 0.15)';
+        navbar.style.background = 'rgba(0, 0, 0, 0.15)';
         navbar.style.backdropFilter = 'blur(5px)';
         navbar.style.webkitBackdropFilter = 'blur(5px)';
         navbar.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
         navbar.style.border = '1px solid rgba(255, 255, 255, 0.3)';
     } else {
-        navbar.style.background = '0, 0, 0, 0.2)';
+        navbar.style.background = 'rgba(0, 0, 0, 0.2)';
         navbar.style.backdropFilter = 'blur(5px)';
         navbar.style.webkitBackdropFilter = 'blur(5px)';
         navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
@@ -264,7 +291,8 @@ function splitText(element) {
     chars.forEach((char) => {
         const charSpan = document.createElement('span');
         charSpan.className = 'char';
-        charSpan.textContent = char;
+        // Preserve visible spacing during animation
+        charSpan.textContent = char === ' ' ? '\u00A0' : char;
         charSpan.style.display = 'inline-block';
         charSpan.style.animationDelay = `${charIndex * 0.05}s`;
         element.appendChild(charSpan);
@@ -289,3 +317,108 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 }); 
+
+// --- Silk WebGL Background (Three.js, adapted from reactbits Silk) ---
+(function initSilkBackground() {
+    const container = document.getElementById('silk-webgl');
+    if (!container || !window.THREE) return;
+
+    const { Scene, PerspectiveCamera, WebGLRenderer, PlaneGeometry, ShaderMaterial, Mesh, Color, Vector2 } = THREE;
+
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.z = 1;
+
+    const renderer = new WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    function hexToRGB(hex) {
+        const h = hex.replace('#', '');
+        return new Color(parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255);
+    }
+
+    const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+    `;
+
+    const fragmentShader = `
+    varying vec2 vUv;
+    uniform float uTime;
+    uniform vec3  uColor;
+    uniform float uSpeed;
+    uniform float uScale;
+    uniform float uRotation;
+    uniform float uNoiseIntensity;
+
+    const float e = 2.71828182845904523536;
+
+    float noise(vec2 texCoord) {
+      float G = e;
+      vec2  r = (G * sin(G * texCoord));
+      return fract(r.x * r.y * (1.0 + texCoord.x));
+    }
+
+    vec2 rotateUvs(vec2 uv, float angle) {
+      float c = cos(angle);
+      float s = sin(angle);
+      mat2  rot = mat2(c, -s, s, c);
+      return rot * uv;
+    }
+
+    void main() {
+      float rnd        = noise(gl_FragCoord.xy);
+      vec2  uv         = rotateUvs(vUv * uScale, uRotation);
+      vec2  tex        = uv * uScale;
+      float tOffset    = uSpeed * uTime;
+
+      tex.y += 0.03 * sin(8.0 * tex.x - tOffset);
+
+      float pattern = 0.6 +
+                      0.4 * sin(5.0 * (tex.x + tex.y +
+                                       cos(3.0 * tex.x + 5.0 * tex.y) +
+                                       0.02 * tOffset) +
+                               sin(20.0 * (tex.x + tex.y - 0.1 * tOffset)));
+
+      vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 15.0 * uNoiseIntensity;
+      col.a = 1.0;
+      gl_FragColor = col;
+    }
+    `;
+
+    const uniforms = {
+        uSpeed: { value: 1 },
+        uScale: { value: 1.25 },
+        uNoiseIntensity: { value: 1.5 },
+        uColor: { value: hexToRGB('#6d28d9') },
+        uRotation: { value: 0.0 },
+        uTime: { value: 0 }
+    };
+
+    const geometry = new PlaneGeometry(2, 2);
+    const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, transparent: true });
+    const mesh = new Mesh(geometry, material);
+    scene.add(mesh);
+
+    function resize() {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function animate(time) {
+        uniforms.uTime.value = time * 0.001;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+})();

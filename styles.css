@@ -12,6 +12,13 @@ body {
     background-color: #0f172a;
 }
 
+/* WebGL silk canvas container */
+.silk-webgl {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -98,13 +105,17 @@ body {
     width: 80%;
 }
 
-.hamburger {
+/* Menu Toggle (reuses bar styling) */
+.menu-toggle {
     display: none;
     flex-direction: column;
     cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
-.bar {
+.menu-toggle .bar {
     width: 25px;
     height: 3px;
     background-color: white;
@@ -113,24 +124,89 @@ body {
     border-radius: 2px;
 }
 
-.hamburger.active .bar:nth-child(2) {
+.menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+.menu-toggle.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.menu-toggle.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* Fullscreen Staggered Menu */
+.staggered-menu {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    z-index: 1500;
 }
 
-.hamburger.active .bar:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
+.staggered-menu.open {
+    opacity: 1;
+    pointer-events: auto;
 }
 
-.hamburger.active .bar:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
+.menu-close {
+    position: absolute;
+    top: max(20px, env(safe-area-inset-top));
+    right: max(20px, env(safe-area-inset-right));
+    background: transparent;
+    border: none;
+    color: #e5e7eb;
+    font-size: 2rem;
+    cursor: pointer;
 }
+
+.staggered-menu-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0;
+    margin: 0;
+}
+
+.staggered-menu-list li {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.staggered-menu.open .staggered-menu-list li {
+    animation: menuItemIn 0.5s ease forwards;
+}
+
+.staggered-menu.open .staggered-menu-list li:nth-child(1) { animation-delay: 0.05s; }
+.staggered-menu.open .staggered-menu-list li:nth-child(2) { animation-delay: 0.15s; }
+.staggered-menu.open .staggered-menu-list li:nth-child(3) { animation-delay: 0.25s; }
+.staggered-menu.open .staggered-menu-list li:nth-child(4) { animation-delay: 0.35s; }
+.staggered-menu.open .staggered-menu-list li:nth-child(5) { animation-delay: 0.45s; }
+
+@keyframes menuItemIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.staggered-link {
+    font-size: 2.25rem;
+    color: #f8fafc;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: color 0.2s ease;
+    text-align: center;
+}
+
+.staggered-link:hover { color: #fbbf24; }
 
 /* Hero Section */
 .hero {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     color: white;
     padding-top: 80px;
 }
@@ -148,8 +224,13 @@ body {
 .hero-title {
     font-size: 3.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.25rem;
     line-height: 1.2;
+}
+
+/* Tighter spacing between the two greeting lines */
+.hero-title + .hero-title {
+    margin-top: 0.25rem;
 }
 
 .highlight {
@@ -694,44 +775,9 @@ section {
         padding: 0.75rem 1.5rem;
     }
 
-    .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 80px;
-        flex-direction: column;
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        width: 85%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        padding: 1.5rem 0;
-        z-index: 999;
-        gap: 0;
-    }
-
-    .nav-menu.active {
-        left: 7.5%;
-        animation: slideInMenu 0.3s ease-out;
-    }
-
-    @keyframes slideInMenu {
-        0% {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    .hamburger {
-        display: flex;
-    }
+    /* Hide inline nav on mobile; use toggle for fullscreen */
+    .nav-menu { display: none; }
+    .menu-toggle { display: flex; }
 
 
     .nav-link {
@@ -925,3 +971,11 @@ section {
         opacity: 1;
     }
 } 
+
+/* Additional small-phone tweaks */
+@media (max-width: 480px) {
+    .staggered-menu-list { gap: 1.25rem; }
+    .staggered-link { font-size: 1.75rem; }
+    .menu-toggle .bar { width: 28px; height: 3.5px; }
+    .menu-toggle { padding: 6px; }
+}
