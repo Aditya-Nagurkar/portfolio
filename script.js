@@ -144,31 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    
-    type();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const heroTitles = document.querySelectorAll('.hero-title');
-    heroTitles.forEach(heroTitle => {
-        // Skip elements that have split-text class (they use split text animation instead)
-        if (!heroTitle.querySelector('.split-text')) {
-            const originalText = heroTitle.textContent;
-            typeWriter(heroTitle, originalText, 50);
-        }
-    });
-});
+// Removed unused typewriter animation (hero headings use split-text)
 
 function animateSkills() {
     const skillItems = document.querySelectorAll('.skill-item');
@@ -316,6 +292,38 @@ document.addEventListener('DOMContentLoaded', () => {
             char.style.animationDelay = `${baseDelay + currentDelay}s`;
         });
     });
+
+    // Tilt animation for profile card
+    const tiltCard = document.getElementById('profile-card');
+    if (tiltCard) {
+        const dampen = 30; // higher = smaller tilt
+        const maxTilt = 12; // degrees
+        let rafId = null;
+
+        function setTransform(rx, ry) {
+            tiltCard.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+        }
+
+        function handleMove(e) {
+            const rect = tiltCard.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const x = (e.clientX - cx) / rect.width;
+            const y = (e.clientY - cy) / rect.height;
+            const rotateY = Math.max(-maxTilt, Math.min(maxTilt, x * dampen));
+            const rotateX = Math.max(-maxTilt, Math.min(maxTilt, -y * dampen));
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => setTransform(rotateX, rotateY));
+        }
+
+        function resetTilt() {
+            tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        }
+
+        tiltCard.addEventListener('mousemove', handleMove);
+        tiltCard.addEventListener('mouseleave', resetTilt);
+        tiltCard.addEventListener('mouseenter', resetTilt);
+    }
 }); 
 
 // --- Silk WebGL Background (Three.js, adapted from reactbits Silk) ---
