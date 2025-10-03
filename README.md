@@ -29,7 +29,7 @@ A modern, responsive personal portfolio website built with HTML, CSS, and JavaSc
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/portfolio.git
+   git clone https://github.com/Aditya-Nagurkar/portfolio.git
    ```
 
 2. Open `index.html` in your web browser
